@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 1 - Conocimientos Previos y Competencias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-soft: #a394ff;
+            --secondary-soft: #6352cf;
+            --bg-dark: #483C9A;
+            --card-surface: rgba(72, 60, 154, 0.75);
+            --text-main: #f0edff;
+            --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 60px 20px;
+            box-sizing: border-box;
+        }
+
+        .instruction {
+            position: fixed;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 30px;
+            border-radius: 30px;
+            border: 1px solid rgba(163, 148, 255, 0.3);
+            color: var(--primary-soft);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            animation: floatAnim 4s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        @keyframes floatAnim {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .card-container {
+            display: flex;
+            gap: 40px;
+            z-index: 1;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            width: 360px;
+            height: 480px;
+            background: var(--card-surface);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 35px;
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+        .card-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: saturate(0.5) brightness(0.25);
+            transition: var(--transition-smooth);
+            z-index: -1;
+        }
+
+        .card:hover {
+            transform: translateY(-15px);
+            border-color: rgba(163, 148, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card:hover .card-bg-img {
+            transform: scale(1.1);
+            filter: saturate(0.8) brightness(0.35);
+        }
+
+        .card h2 {
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.6rem;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Modal Base */
+        .modal {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(22, 17, 54, 0.95);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: #2f2575;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 85vh;
+            padding: 45px;
+            border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            overflow-y: auto;
+            color: #e5e1fc;
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            color: var(--primary-soft);
+            font-size: 1.8rem;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Grid de Flip Cards unificado para ambas secciones */
+        .grid-knowledge {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 240px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            padding: 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Front Side */
+        .flip-card-front {
+            border: 1px solid rgba(163, 148, 255, 0.3);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flip-card-front::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(30, 24, 76, 0.85), rgba(47, 37, 117, 0.90));
+            z-index: 1;
+            transition: var(--transition-smooth);
+        }
+
+        .flip-card:hover .flip-card-front::before {
+            background: linear-gradient(135deg, rgba(30, 24, 76, 0.70), rgba(47, 37, 117, 0.80));
+        }
+
+        .flip-card-front h4, .flip-card-front .click-hint {
+            position: relative;
+            z-index: 2;
+        }
+
+        .flip-card-front h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .flip-card-front .click-hint {
+            font-size: 0.75rem;
+            color: var(--primary-soft);
+            margin-top: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Back Side */
+        .flip-card-back {
+            background: #1c1549;
+            border: 1px solid var(--primary-soft);
+            color: #e5e1fc;
+            transform: rotateY(180deg);
+            text-align: left;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            overflow-y: auto;
+            justify-content: center;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .flip-card-back p {
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #fff;
+            font-size: 18px;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 80, 80, 0.2);
+            color: #ff5050;
+            transform: rotate(90deg);
+        }
+
+        .modal-content::-webkit-scrollbar, .flip-card-back::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb, .flip-card-back::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="instruction">haga clic sobre las tarjetas para ampliar la información</div>
+
+    <div class="main-container">
+        <div class="card-container">
+            <div class="card" onclick="openModal('modal1')">
+                <div class="card-bg-img"
+                    style="background-image: url('https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&q=80&w=800');">
+                </div>
+                <h2>Conocimientos previos</h2>
+            </div>
+
+            <div class="card" onclick="openModal('modal2')">
+                <div class="card-bg-img"
+                    style="background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=800');">
+                </div>
+                <h2>Competencias</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: CONOCIMIENTOS PREVIOS -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('modal1')">✕</div>
+            <h3>Conocimientos previos</h3>
+            <p style="margin-bottom: 25px; font-size: 0.95rem; opacity: 0.85; font-weight: 300;">Para abordar con solvencia los contenidos del Módulo 1, se recomienda que el estudiante cuente con los siguientes conocimientos y competencias previas:</p>
+            
+            <div class="grid-knowledge">
+                
+                <!-- Tarjeta 1 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Fundamentos del modelo relacional</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>comprensión clara de los principios del modelo relacional, incluyendo tablas, atributos, claves primarias y foráneas, restricciones de integridad y relaciones entre entidades.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Manejo básico de SQL</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>capacidad para construir consultas SELECT con filtros, funciones de agregación, subconsultas y joins, así como ejecutar operaciones de inserción, actualización y eliminación de datos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Conceptos elementales de transacciones</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>conocimiento del uso de COMMIT y ROLLBACK, entendiendo que las operaciones sobre la base de datos pueden formar parte de una unidad lógica de trabajo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 4 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1516116211223-4258568f1013?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Lógica de programación estructurada</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>experiencia previa en algún lenguaje de programación que incluya el uso de variables, estructuras condicionales (if/else), ciclos y manejo básico de errores.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 5 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Nociones de arquitectura Cliente-Servidor</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>comprensión general de cómo interactúan las aplicaciones con el sistema gestor de bases de datos y del rol que cumple el motor relacional dentro de un sistema de información.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 6 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Actitud analítica frente al rendimiento y la integridad</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>disposición para analizar el impacto que las decisiones de programación tienen sobre la consistencia, la concurrencia y el desempeño del sistema.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: COMPETENCIAS (AHORA EN FLIP CARDS GRID) -->
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('modal2')">✕</div>
+            <h3>Competencias</h3>
+            <p style="margin-bottom: 25px; font-size: 0.95rem; opacity: 0.85; font-weight: 300;">Al finalizar esta unidad, el estudiante estará en capacidad de:</p>
+            
+            <div class="grid-knowledge">
+                
+                <!-- Competencia 1 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Diseñar lógica procedural dentro del SGBD</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>Diseñar e implementar procedimientos almacenados estructurados, incorporando parámetros, control de flujo y manejo de excepciones, garantizando claridad, modularidad y mantenibilidad del código.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Competencia 2 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Desarrollar funciones reutilizables con impacto controlado en el rendimiento</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>Construir funciones definidas por el usuario que puedan integrarse eficientemente en consultas SQL, evaluando su impacto en planes de ejecución y optimización.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Competencia 3 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Automatizar reglas de negocio mediante mecanismos de eventos</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>Implementar triggers adecuados a distintos escenarios empresariales, aplicando criterios técnicos para su uso responsable y evitando efectos colaterales en la integridad y el rendimiento.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Competencia 4 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Gestionar transacciones con control de concurrencia</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>Aplicar correctamente los principios de atomicidad, aislamiento y durabilidad en el diseño de soluciones procedurales, comprendiendo el comportamiento de bloqueos y niveles de aislamiento.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Competencia 5 -->
+                <div class="flip-card" onclick="toggleFlip(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=500');">
+                            <h4>Evaluar el impacto arquitectónico del código ejecutado en el motor</h4>
+                            <div class="click-hint">Girar ↻</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <p>Analizar cómo la lógica almacenada dentro del SGBD influye en la estabilidad, escalabilidad y desempeño del sistema, tomando decisiones fundamentadas desde una perspectiva profesional.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = 'auto';
+            const flippedCards = document.querySelectorAll('.flip-card.flipped');
+            flippedCards.forEach(card => card.classList.remove('flipped'));
+        }
+
+        function toggleFlip(card) {
+            card.classList.toggle('flipped');
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === "Escape") {
+                const activeModal = document.querySelector('.modal.active');
+                if (activeModal) closeModal(activeModal.id);
+            }
+        });
+
+        window.onclick = function (e) {
+            if (e.target.classList.contains('modal')) {
+                closeModal(e.target.id);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
