@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagrama de Flujo Animado</title>
+  <style>
+    /* Importamos la fuente redondeada similar a la de la imagen */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #1e1e24; /* Fondo oscuro para resaltar la animación */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #ffffff;
+    }
+
+    /* Mensaje de instrucción */
+    .instruction {
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      color: #a0a0b0;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 8px 16px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .key-badge {
+      background: #ffffff;
+      color: #1e1e24;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .diagram-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 320px;
+      padding: 10px;
+    }
+
+    /* Estilos base para los bloques */
+    .box {
+      width: 100%;
+      padding: 16px 20px;
+      background-color: #f6f6f6;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2b2b2b;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      border-style: solid;
+      border-width: 5px;
+      box-sizing: border-box;
+      line-height: 1.2;
+      opacity: 0; /* Oculto inicialmente para la animación */
+    }
+
+    /* Bordes de los bloques */
+    .box-teal { border-color: #0b7a8d; }
+    .box-orange { border-color: #e66014; }
+    .box-blue { border-color: #0b4db7; }
+    .box-green { border-color: #4da628; }
+    .box-red { border-color: #ce2236; }
+
+    /* Estilos para las flechas */
+    .arrow {
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 10px solid;
+      margin: 8px 0;
+      opacity: 0; /* Oculto inicialmente para la animación */
+    }
+
+    /* Colores de las flechas */
+    .arrow-teal { border-top-color: #0b7a8d; }
+    .arrow-orange { border-top-color: #e66014; }
+    .arrow-blue { border-top-color: #0b4db7; }
+    .arrow-green { border-top-color: #4da628; }
+
+    /* =========================================================
+       ANIMACIÓN REBOTE / LÁTIGO (BOUNCE)
+       ========================================================= */
+    .animate {
+      animation: bounceIn 0.75s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-80px) scale(0.7);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(12px) scale(1.05);
+      }
+      80% {
+        transform: translateY(-4px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Instrucción para el usuario -->
+  <div class="instruction">
+    Presiona <span class="key-badge">ENTER</span> para reiniciar la animación
+  </div>
+
+  <div class="diagram-container" id="diagram">
+    <div class="box box-teal">Cliente</div>
+    <div class="arrow arrow-teal"></div>
+
+    <div class="box box-orange">Cabecera del<br>procedimiento</div>
+    <div class="arrow arrow-orange"></div>
+
+    <div class="box box-blue">Sección<br>declarativa</div>
+    <div class="arrow arrow-blue"></div>
+
+    <div class="box box-green">bloqueo<br>ejecutable</div>
+    <div class="arrow arrow-green"></div>
+
+    <div class="box box-red">Sección de<br>excepciones</div>
+  </div>
+
+  <script>
+    // Función para iniciar la animación en secuencia
+    function runAnimation() {
+      const items = document.querySelectorAll('#diagram > div');
+      
+      items.forEach((item, index) => {
+        // Quitamos la clase para reiniciar la animación
+        item.classList.remove('animate');
+        item.style.opacity = '0';
+        
+        // Aplicamos la animación con un retardo escalonado (stagger)
+        setTimeout(() => {
+          item.classList.add('animate');
+        }, index * 120); // 120ms de diferencia entre cada elemento
+      });
+    }
+
+    // Ejecutar al cargar la página
+    window.addEventListener('DOMContentLoaded', runAnimation);
+
+    // Ejecutar al presionar la tecla Enter
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        runAnimation();
+      }
+    });
+  </script>
+
+</body>
+</html>
