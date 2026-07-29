@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarjetas Interactivas Estilo Apple</title>
+
+  <!-- Importación de Fuente Poppins desde Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- Variables Globales y Reset --- */
+    :root {
+      --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      /* Estilos de Cristal (Glassmorphism) */
+      --glass-bg: rgba(255, 255, 255, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --glass-blur: blur(25px) saturate(190%);
+      
+      /* Sombras y Colores de Texto estilo Apple */
+      --card-shadow: 0 12px 40px rgba(31, 38, 135, 0.12);
+      --text-primary: #1d1d1f;
+      --text-secondary: #424245;
+      --accent-color: #0066cc; /* Azul Apple */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      color: var(--text-primary);
+      position: relative;
+      overflow-x: hidden;
+      
+      /* Fondo dinámico vibrante con gradiente dinámico */
+      background: linear-gradient(125deg, #a1c4fd 0%, #c2e9fb 35%, #e0c3fc 70%, #8ec5fc 100%);
+      background-size: 200% 200%;
+      animation: gradientBG 15s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- Fondo con Formas / Esferas con Movimiento Suave --- */
+    .bg-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0.6;
+      animation: floatShape 20s infinite ease-in-out alternate;
+    }
+
+    .shape-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #ff9a9e 0%, #fecfef 100%);
+      top: -50px;
+      left: -50px;
+      animation-duration: 18s;
+    }
+
+    .shape-2 {
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, #a18cd1 0%, #fbc2eb 100%);
+      bottom: -100px;
+      right: -50px;
+      animation-duration: 22s;
+    }
+
+    .shape-3 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #84fab0 0%, #8fd3f4 100%);
+      bottom: 20%;
+      left: 15%;
+      animation-duration: 16s;
+    }
+
+    .shape-4 {
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, #fccb90 0%, #d57eeb 100%);
+      top: 15%;
+      right: 20%;
+      animation-duration: 24s;
+    }
+
+    @keyframes floatShape {
+      0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+      }
+      50% {
+        transform: translate(60px, 40px) scale(1.1) rotate(180deg);
+      }
+      100% {
+        transform: translate(-40px, 80px) scale(0.95) rotate(360deg);
+      }
+    }
+
+    /* --- Instrucción Flotante Superior Derecha --- */
+    .floating-instruction {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      padding: 12px 22px;
+      border-radius: 50px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+      text-align: left;
+    }
+
+    .floating-instruction::before {
+      content: 'i';
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 20px;
+      height: 20px;
+      background-color: rgba(0, 0, 0, 0.06);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex-shrink: 0;
+    }
+
+    /* --- Contenedor Grid Principal --- */
+    .main-container {
+      width: 100%;
+      max-width: 1100px;
+      margin-top: 60px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* --- Estilo de las Tarjetas (Botones) --- */
+    .card-button {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: var(--card-shadow);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+    }
+
+    .card-button:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 45px rgba(31, 38, 135, 0.18);
+      background: rgba(255, 255, 255, 0.75);
+      border-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .card-button:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.35;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .card-more {
+      font-size: 0.85rem;
+      color: var(--accent-color);
+      font-weight: 500;
+      margin-top: auto;
+      opacity: 0.85;
+      transition: opacity 0.2s, transform 0.2s;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .card-button:hover .card-more {
+      opacity: 1;
+      transform: translateX(4px);
+    }
+
+    /* --- Estilos de la Ventana Emergente (Modal) --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      padding: 2.5rem;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      max-width: 550px;
+      width: 100%;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.18);
+      position: relative;
+      text-align: left;
+      transform: scale(0.85) translateY(30px);
+      transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      text-align: left;
+    }
+
+    .modal-body {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      font-weight: 400;
+      text-align: left;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: rgba(0, 0, 0, 0.05);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      transition: background 0.2s;
+    }
+
+    .close-modal:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 650px) {
+      .floating-instruction {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        left: 12px;
+        text-align: left;
+        justify-content: flex-start;
+        font-size: 0.8rem;
+      }
+      .main-container {
+        margin-top: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fondo animado con esferas de colores traslúcidos -->
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+  </div>
+
+  <!-- Instrucción flotante superior derecha -->
+  <div class="floating-instruction">
+    Haga clic sobre las tarjetas para ampliar la información.
+  </div>
+
+  <div class="main-container">
+    <div class="cards-grid">
+      
+      <!-- Tarjeta 1 -->
+      <button class="card-button" onclick="openModal('Cálculos financieros:', 'permiten implementar operaciones como cálculo de impuestos, descuentos, intereses o conversiones monetarias.')">
+        <h2 class="card-title">Cálculos financieros:</h2>
+        <span class="card-more">Ampliar información &rarr;</span>
+      </button>
+
+      <!-- Tarjeta 2 -->
+      <button class="card-button" onclick="openModal('Transformación de datos:', 'se utilizan para modificar o formatear valores almacenados en la base de datos, por ejemplo, convertir cadenas de texto o calcular nuevas representaciones de datos.')">
+        <h2 class="card-title">Transformación de datos:</h2>
+        <span class="card-more">Ampliar información &rarr;</span>
+      </button>
+
+      <!-- Tarjeta 3 -->
+      <button class="card-button" onclick="openModal('Validación de información:', 'las funciones pueden emplearse para verificar condiciones específicas sobre los datos antes de realizar determinadas operaciones.')">
+        <h2 class="card-title">Validación de información:</h2>
+        <span class="card-more">Ampliar información &rarr;</span>
+      </button>
+
+      <!-- Tarjeta 4 -->
+      <button class="card-button" onclick="openModal('Normalización de valores:', 'permiten aplicar reglas consistentes de transformación sobre los datos antes de ser utilizados en consultas o reportes.')">
+        <h2 class="card-title">Normalización de valores:</h2>
+        <span class="card-more">Ampliar información &rarr;</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Ventana Emergente (Modal) -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <button class="close-modal" id="closeModal">&times;</button>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <p class="modal-body" id="modalBody"></p>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const closeBtn = document.getElementById('closeModal');
+
+    function openModal(title, text) {
+      modalTitle.innerText = title;
+      modalBody.innerText = text;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+  </script>
+
+</body>
+</html>
